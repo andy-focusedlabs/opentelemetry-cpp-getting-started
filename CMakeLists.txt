@@ -8,17 +8,22 @@ set(project_name roll-dice-server)
 set(SOURCES
     main.cpp  # Add your source files here
 )
-
 # Create an executable target
 add_executable(dice-server ${SOURCES})
 
 set(OATPP_ROOT ../oatpp)
+set(opentelemetry-cpp_DIR ../otel-cpp/lib/cmake/opentelemetry-cpp)
 find_library(OATPP_LIB NAMES liboatpp.a HINTS "${OATPP_ROOT}/build/src/" NO_DEFAULT_PATH)
-
 if (NOT OATPP_LIB)
   message(SEND_ERROR "Did not find oatpp library ${OATPP_ROOT}/build/src")
 endif()
-#set the path to the directory containing "oatpp" package configuration files
+# set the path to the directory containing "oatpp" package configuration files
 include_directories(${OATPP_ROOT}/src)
-target_link_libraries(dice-server PRIVATE ${OATPP_LIB})
 
+# Use find_package to include OpenTelemetry C++
+find_package(opentelemetry-cpp CONFIG REQUIRED NO_DEFAULT_PATH)
+
+# Link against each OpenTelemetry C++ library
+target_link_libraries(dice-server PRIVATE
+                      ${OATPP_LIB}
+                      ${OPENTELEMETRY_CPP_LIBRARIES})

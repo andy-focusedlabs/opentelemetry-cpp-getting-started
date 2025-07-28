@@ -1,9 +1,11 @@
 #include "oatpp/web/server/HttpConnectionHandler.hpp"
 #include "oatpp/network/Server.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
+#include "oatpp/core/base/Environment.hpp"
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -13,6 +15,7 @@ public:
     int low = 1;
     int high = 7;
     int random = rand() % (high - low) + low;
+    OATPP_LOGI("DiceRoll", "Generated dice roll: %d", random);
     // Convert a std::string to oatpp::String
     const string response = to_string(random);
     return ResponseFactory::createResponse(Status::CODE_200, response.c_str());
